@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>员工注册登录系统</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .card {
+                flex-direction: row;
+                min-height: 600px;
+            }
+        }
+
+        .hero {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 500px;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--secondary);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--secondary);
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .toggle-form a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            background: rgba(76, 201, 240, 0.2);
+            color: #0c5460;
+            display: block;
+        }
+
+        .message.error {
+            background: rgba(247, 37, 133, 0.2);
+            color: #721c24;
+            display: block;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            background: white;
+            color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="hero">
+                <div class="logo">
+                    <div class="logo-icon">ID</div>
+                    <span>员工系统</span>
+                </div>
+                <h1>员工注册登录系统</h1>
+                <p>使用您的工号注册新账号或登录现有账号，享受我们提供的服务</p>
+            </div>
+
+            <div class="form-container">
+                <!-- 登录表单 -->
+                <div id="login-form" class="form-section active">
+                    <h2>用户登录</h2>
+                    <div id="login-message" class="message"></div>
+                    <div class="form-group">
+                        <label for="login-employee-id">工号</label>
+                        <input type="text" id="login-employee-id" placeholder="请输入您的工号" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">密码</label>
+                        <input type="password" id="login-password" placeholder="请输入您的密码" required>
+                    </div>
+                    <button id="login-btn">登录</button>
+                    <div class="toggle-form">
+                        还没有账号？ <a id="show-register">立即注册</a>
+                    </div>
+                </div>
+
+                <!-- 注册表单 -->
+                <div id="register-form" class="form-section">
+                    <h2>新用户注册</h2>
+                    <div id="register-message" class="message"></div>
+                    <div class="form-group">
+                        <label for="register-employee-id">工号</label>
+                        <input type="text" id="register-employee-id" placeholder="请输入您的新工号" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-username">用户名</label>
+                        <input type="text" id="register-username" placeholder="请设置用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">密码</label>
+                        <input type="password" id="register-password" placeholder="请设置密码 (至少6位)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">确认密码</label>
+                        <input type="password" id="register-confirm-password" placeholder="请再次输入密码" required>
+                    </div>
+                    <button id="register-btn">注册</button>
+                    <div class="toggle-form">
+                        已有账号？ <a id="show-login">立即登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM 元素
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showRegisterLink = document.getElementById('show-register');
+        const showLoginLink = document.getElementById('show-login');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const loginMessage = document.getElementById('login-message');
+        const registerMessage = document.getElementById('register-message');
+
+        // 配置后端API地址
+        const API_BASE_URL = 'http://your-server-ip:5000'; // 替换为你的服务器IP
+
+        // 切换表单显示
+        showRegisterLink.addEventListener('click', () => {
+            loginForm.classList.remove('active');
+            registerForm.classList.add('active');
+        });
+
+        showLoginLink.addEventListener('click', () => {
+            registerForm.classList.remove('active');
+            loginForm.classList.add('active');
+        });
+
+        // 登录功能
+        loginBtn.addEventListener('click', async () => {
+            const employeeId = document.getElementById('login-employee-id').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!employeeId || !password) {
+                showMessage(loginMessage, '请填写工号和密码', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        employee_id: employeeId,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage(loginMessage, `登录成功！欢迎 ${data.username}`, 'success');
+                    // 这里可以重定向到用户主页
+                } else {
+                    showMessage(loginMessage, data.error || '登录失败', 'error');
+                }
+            } catch (error) {
+                showMessage(loginMessage, '网络错误，请稍后再试', 'error');
+                console.error('登录错误:', error);
+            }
+        });
+
+        // 注册功能
+        registerBtn.addEventListener('click', async () => {
+            const employeeId = document.getElementById('register-employee-id').value;
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+
+            if (!employeeId || !username || !password || !confirmPassword) {
+                showMessage(registerMessage, '请填写所有字段', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage(registerMessage, '两次输入的密码不一致', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage(registerMessage, '密码长度至少为6位', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        employee_id: employeeId,
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage(registerMessage, '注册成功！请登录', 'success');
+                    // 切换到登录表单
+                    setTimeout(() => {
+                        registerForm.classList.remove('active');
+                        loginForm.classList.add('active');
+                        // 自动填充工号
+                        document.getElementById('login-employee-id').value = employeeId;
+                        document.getElementById('login-password').value = '';
+                        loginMessage.textContent = '';
+                    }, 1500);
+                } else {
+                    showMessage(registerMessage, data.error || '注册失败', 'error');
+                }
+            } catch (error) {
+                showMessage(registerMessage, '网络错误，请稍后再试', 'error');
+                console.error('注册错误:', error);
+            }
+        });
+
+        // 显示消息
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = 'message';
+            element.classList.add(type);
+        }
+    </script>
+</body>
+</html>
